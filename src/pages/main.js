@@ -5,35 +5,29 @@ import './main.css';
 import {
     loadWeb3,
     loadAccount,
-    loadTutorial
+    loadCoin
 } from "../helpers/web3Functions";
 
 const LandingPage = () => {
     const [account, setAccount] = useState("")
-    const [tutorial, setTutorial] = useState("")
-    const [newFrase, setNewFrase] = useState("")
-    const [frase, setFrase] = useState("")
+    const [coin, setCoin] = useState("")
+    const [newToken, setNewToken] = useState("")
 
-    const callGetFrase = async () => {
-      const f = await tutorial.methods.get().call();
-      setFrase(f);
-    }
-
-    const callSetFrase = async (f) => {
-     await tutorial.methods.set(f).send({from: account});
+    const callSetToken = async (nome,simbolo,qntd) => {
+     await coin.methods.constructor("teste","TXT",account,100000).send({from: account});
     }
 
     const loadBlockchainData = async () => {
         var web3 = await loadWeb3();
         const networkId = await web3.eth.net.getId()
         const acc = await loadAccount(web3);
-        const tutorialContract = await loadTutorial(web3, networkId);
-        if(!tutorialContract) {
+        const coinContract = await loadCoin(web3, networkId);
+        if(!coinContract) {
           window.alert('Smart contract not detected on the current network. Please select another network with Metamask.')
           return;
         }
         setAccount(acc);
-        setTutorial(tutorialContract);
+        setCoin(coinContract);
       }
     useEffect(() => {
       loadBlockchainData();
@@ -58,17 +52,28 @@ const LandingPage = () => {
               </div>
                 <div className="row">
                   <div>
-                    <p className='title'>Frase:</p> 
-                    <div>{frase}</div>
                   </div>
-                  <button className='btnGet' type='button' onClick={callGetFrase} >Get</button>
                 </div>
-                <div className="row">
-                  <div>
-                    <p className='title'> Trocar frase:</p>
-                    <input placeholder="Nova frase" className='inp' onChange={(e) => setNewFrase(e.target.value)}/>
+                <div className="col">
+                  <div className="row">
+                    <div>
+                      <p className='title'> Novo nome:</p>
+                      <input placeholder="Nova nome" className='inp' onChange={(nome) => setNewToken(nome.target.value)}/>
+                    </div>
                   </div>
-                    <button className='btn' type="button" onClick={() => callSetFrase(newFrase)}>Submit</button>
+                  <div className="row">
+                    <div>
+                      <p className='title'> Novo simbolo:</p>
+                      <input placeholder="Nova simbolo" className='inp' onChange={(simbolo) => setNewToken(simbolo.target.value)}/>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div>
+                      <p className='title'> Qntd inicial:</p>
+                      <input placeholder="Qntd inicial" className='inp' onChange={(qntd) => setNewToken(qntd.target.value)}/>
+                    </div>
+                      <button className='btn' type="button" onClick={() => callSetToken(newToken)}>Submit</button>
+                  </div>
                 </div>
             </div>
           </div>
